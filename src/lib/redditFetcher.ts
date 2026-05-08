@@ -1,39 +1,9 @@
-import fs from "fs";
-import path from "path";
-import type {
-  RedditListingResponse,
-  RedditPost,
-  QueuedStory,
-  StoryQueue,
-} from "@/types/reddit";
+import type { RedditListingResponse, RedditPost, QueuedStory } from "@/types/reddit";
+import { loadQueue, saveQueue, getAllKnownIds } from "@/lib/queue";
 
 const SUBREDDITS = ["nosleep", "LetsNotMeet", "Paranormal", "Glitch_in_the_Matrix"];
 const MIN_UPVOTES = 500;
-const QUEUE_PATH = path.join(process.cwd(), "src/data/queue.json");
 const USER_AGENT = "yukah-horror-pipeline/0.1 (automated content fetcher)";
-
-function loadQueue(): StoryQueue {
-  if (!fs.existsSync(QUEUE_PATH)) {
-    return { pending: [], approved: [], processed: [], rejected: [], lastFetched: null };
-  }
-  const raw = fs.readFileSync(QUEUE_PATH, "utf-8");
-  return JSON.parse(raw) as StoryQueue;
-}
-
-function saveQueue(queue: StoryQueue): void {
-  fs.mkdirSync(path.dirname(QUEUE_PATH), { recursive: true });
-  fs.writeFileSync(QUEUE_PATH, JSON.stringify(queue, null, 2));
-}
-
-function getAllKnownIds(queue: StoryQueue): Set<string> {
-  const all = [
-    ...queue.pending,
-    ...queue.approved,
-    ...queue.processed,
-    ...queue.rejected,
-  ];
-  return new Set(all.map((s) => s.id));
-}
 
 async function fetchSubreddit(subreddit: string): Promise<RedditPost[]> {
   const url = `https://www.reddit.com/r/${subreddit}/top.json?limit=25&t=week`;

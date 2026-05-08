@@ -13,16 +13,34 @@ export interface RedditPost {
   fetchedAt: string;
 }
 
-export type QueueStatus = "pending" | "approved" | "processed" | "rejected";
+export type QueueStatus =
+  | "pending"
+  | "approved"
+  | "scripted"
+  | "audio_ready"
+  | "processed"
+  | "rejected";
 
 export interface QueuedStory extends RedditPost {
   status: QueueStatus;
   queuedAt: string;
+  // Added by Step 2 — script formatter
+  script?: {
+    scriptText: string;
+    wordCount: number;
+    estimatedDurationSeconds: number;
+    formattedAt: string;
+  };
+  // Added by Step 3 — audio generator
+  audioParts?: string[];   // relative paths, one per chunk
+  audioGeneratedAt?: string;
 }
 
 export interface StoryQueue {
   pending: QueuedStory[];
   approved: QueuedStory[];
+  scripted: QueuedStory[];
+  audioReady: QueuedStory[];
   processed: QueuedStory[];
   rejected: QueuedStory[];
   lastFetched: string | null;

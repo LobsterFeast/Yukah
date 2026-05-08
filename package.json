@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "fetch-stories": "tsx scripts/fetchStories.ts"
+    "fetch-stories": "tsx scripts/fetchStories.ts",
+    "format-scripts": "tsx scripts/formatScripts.ts",
+    "generate-audio": "tsx scripts/generateAudio.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.54.0",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
